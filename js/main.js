@@ -1,56 +1,26 @@
-(function ($) {
-// VERTICALLY ALIGN FUNCTION
-$.fn.vAlign = function() {
-    return this.each(function(i){
-    var ah = $(this).height();
-    var ph = $(this).parent().height();
-    var mh = Math.ceil((ph-ah) / 2);
-    $(this).css('padding-top', mh);
-    });
-};
-})(jQuery);
-$(document).ready(function(){
-	var win_h = $(window).height();
-	function setHeight(){
-		$('.home > .hero').css({height:win_h});
-		$(".vcenter").vAlign();
-	}
+jQuery(document).ready(function() {
 
-	setHeight();
-	/*$(".slogan h1").slabText({
-	        "viewportBreakpoint":300
-	});*/
-	
-	$(window).bind('resize',function() {
-		setHeight();
-	 });
-
-	 $('#top-nav').onePageNav({
-
-        currentClass: 'current',
-        changeHash: false,
-        scrollSpeed: 750,
-        scrollOffset: 50,
-        scrollThreshold: 0.5,
-        filter: ':not(.external)',
-        begin: function() {
-            //I get fired when the animation is starting
-        },
-        end: function() {
-            //I get fired when the animation is ending
-        },
-        scrollChange: function() {
-            //I get fired when you enter a section and I pass the list item of the section
-        }
-    });
-
-     $('#nav-button').click(function(){
-        $top_nav = $('#top-nav');
-        if($top_nav.is(':hidden')){
-            $top_nav.slideDown("slow");
-        }else{
-            $top_nav.slideUp();
-        }
-     })
+	/* How to Handle Hashtags */
+	jQuery(window).hashchange(function(){
+		var hash = location.hash;
+		jQuery('a[href='+hash+']').trigger('click');
+	});
+	jQuery('section.content.hide').hide();
+	/* Main Navigation Clicks */
+	jQuery('.main-nav ul li a').click(function() {
+		var link = jQuery(this).attr('href').substr(1);
+		
+		if ( !jQuery('section.content.show, section#' + link).is(':animated') ) {
+			jQuery('.main-nav ul li a').removeClass('active'); //remove active
+			jQuery('section.content.show').addClass('show').animate({'opacity' : 0}, {queue: false, duration: 1000,
+				complete: function() {
+					jQuery('section.content.show').hide();
+					jQuery('a[href="#'+link+'"]').addClass('active'); // add active
+					jQuery('section#' + link).show();
+					jQuery('section#' + link).addClass('show').animate({'opacity' : 1}, {queue: false, duration: 1000});	
+				}
+			});
+		}
+	});
 
 });
